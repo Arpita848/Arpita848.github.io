@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'exams/styles.css' %}" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-page">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Online Exam Portal</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+
+        <!-- Performance Analytics -->
+        <h2 class="mb-4 text-center">Your Performance Analytics</h2>
+        <div class="row mb-5">
+            <div class="col-md-6 text-center">
+                <h5>Total Exams Attempted</h5>
+                <p class="fs-4">{{ total_attempts }}</p>
+            </div>
+            <div class="col-md-6 text-center">
+                <h5>Average Score</h5>
+                <p class="fs-4">{{ avg_score }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-12">
+                <canvas id="scoreChart" width="400" height="150"></canvas>
+            </div>
+        </div>
+
+        <h4 class="mb-3">Past Exam Results</h4>
+        <table class="table table-bordered table-striped mb-5">
+            <thead class="table-dark">
+                <tr>
+                    <th>Exam</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in results %}
+                <tr>
+                    <td>{{ res.exam.title }}</td>
+                    <td>{{ res.score }}</td>
+                    <td>{{ res.taken_at|date:"d M Y H:i" }}</td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center">No exams attempted yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Available Exams -->
+        <h2 class="mb-4 text-center">Available Exams</h2>
+        <div class="row">
+            {% for exam in exams %}
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ exam.title }}</h5>
+                        <p class="card-text">{{ exam.description|truncatewords:20 }}</p>
+                        <a href="{% url 'take_exam' exam.id %}" class="btn btn-primary w-100">Take Exam</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center">No exams available right now.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    const scoreChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Scores',
+                data: {{ scores|safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
