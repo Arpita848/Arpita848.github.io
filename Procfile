@@ -1,1 +1,1 @@
-web: gunicorn online_exam.wsgi:application
+web: gunicorn online_exam.wsgi:application --bind 0.0.0.0:$PORT
