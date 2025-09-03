@@ -25,10 +25,8 @@ SECRET_KEY = "django-insecure-vg%z%7xjg(75s*m#0^+a&!6*yq95f6^y5+5**vdu5001go&!4j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['online-exam-portal-52o2.onrender.com',
-                 'exam.arpitapanigrahi.com',
-                 'localhost', '127.0.0.1']
-
+ALLOWED_HOSTS = ['online-exam-portal-52o2.onrender.com', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://online-exam-portal-52o2.onrender.com']
 
 # Application definition
 
